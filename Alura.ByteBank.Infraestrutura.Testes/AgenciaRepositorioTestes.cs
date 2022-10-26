@@ -7,15 +7,20 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Alura.ByteBank.Infraestrutura.Testes
 {
     public class AgenciaRepositorioTestes
     {
         private readonly IAgenciaRepositorio _repositorio;
+        public ITestOutputHelper SaidaConsoleTeste { get; set; }
 
-        public AgenciaRepositorioTestes()
+        public AgenciaRepositorioTestes(ITestOutputHelper _saidaConsoleTeste)
         {
+            SaidaConsoleTeste = _saidaConsoleTeste;
+            SaidaConsoleTeste.WriteLine("Construtor executado com sucesso.");
+
             //Injetando dependência no construtor
             var servico = new ServiceCollection();
             servico.AddTransient<IAgenciaRepositorio, AgenciaRepositorio>();
@@ -60,7 +65,7 @@ namespace Alura.ByteBank.Infraestrutura.Testes
         }
 
         [Fact]
-        public void TesteInsereUmaNovaAgenciaNaBaseDeDados()
+        public void TesteInserirUmaNovaAgenciaNaBaseDeDados()
         {
             //Arrange
             string nome = "Agência Guarapari";
@@ -155,6 +160,12 @@ namespace Alura.ByteBank.Infraestrutura.Testes
 
             //Assert
             bytebankRepositorioMock.Verify(b => b.BuscarAgencias()); // Verifica se o comportamento foi invocado adequadamente.
+        }
+
+        // É uma boa prática utilizar esse dispose.
+        public void Dispose()
+        {
+            SaidaConsoleTeste.WriteLine("Destrutor invocado!");
         }
     }
 }
